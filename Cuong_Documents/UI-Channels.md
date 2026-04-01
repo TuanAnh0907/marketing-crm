@@ -1,37 +1,37 @@
 # UI Channels V2 Spec (Updated)
 
-## 1. Muc tieu tai lieu
-- Mo ta day du UI/UX tab `Channels` ban V2.
-- Tong hop cac thay doi da implement trong code hien tai.
-- Giai thich cac khai niem OAuth, token, connect theo cach nguoi moi co the hieu.
+## 1. Mục tiêu tài liệu
+- Mô tả đầy đủ UI/UX tab `Channels` bản V2.
+- Tổng hợp các thay đổi đã implement trong code hiện tại.
+- Giải thích các khái niệm OAuth, token, connect theo cách người mới có thể hiểu.
 
-## 2. Tong quan nghiep vu
-- Tab `Channels` dung de quan ly kenh social cua customer: YouTube, TikTok, Instagram.
-- Muc tieu V2:
-  - Van quan ly danh sach kenh gon gang.
-  - San sang cho OAuth va upload tu dong giai doan sau.
-  - Khong hien thi token thuan van ban tren UI.
+## 2. Tổng quan nghiệp vụ
+- Tab `Channels` dùng để quản lý kênh social của customer: YouTube, TikTok, Instagram.
+- Mục tiêu V2:
+  - Vẫn quản lý danh sách kênh gọn gàng.
+  - Sẵn sàng cho OAuth và upload tự động giai đoạn sau.
+  - Không hiển thị token thuần văn bản trên UI.
 
-## 3. Changelog UI da cap nhat (thuc te)
-### 3.1 Thay doi tong quan man hinh
-- Nut `Add new channel` da duoc dua ra ngoai card bang, dat phia tren ben phai.
-- Bang du lieu su dung horizontal scroll khi man hinh hep.
-- Cac cot duoc giu `whitespace-nowrap` de tranh vo dong.
+## 3. Changelog UI đã cập nhật (thực tế)
+### 3.1 Thay đổi tổng quan màn hình
+- Nút `Add new channel` đã được đưa ra ngoài card bảng, đặt phía trên bên phải.
+- Bảng dữ liệu sử dụng horizontal scroll khi màn hình hẹp.
+- Các cột được giữ `whitespace-nowrap` để tránh vỡ dòng.
 
 ### 3.2 Dialog Add/Edit
-- Dialog hien thi dang modal can giua man hinh (render qua portal vao `document.body`).
-- Nen phia sau modal toi 25% (`bg-black/25`).
+- Dialog hiển thị dạng modal căn giữa màn hình (render qua portal vào `document.body`).
+- Nền phía sau modal tối 25% (`bg-black/25`).
 - Add dialog:
-  - Co `Create mode`, `Platform`, `Channel name`.
-  - Neu `Manual` thi hien them `Channel URL`.
-  - Khong hien thi `Status`.
+  - Có `Create mode`, `Platform`, `Channel name`.
+  - Nếu `Manual` thì hiện thêm `Channel URL`.
+  - Không hiển thị `Status`.
 - Edit dialog:
-  - Co `Status`.
-  - Co khoi thong tin read-only lien quan ket noi/token.
+  - Có `Status`.
+  - Có khối thông tin read-only liên quan kết nối/token.
 
-### 3.3 Bang thong tin
-- Cot hien co:
-  - `#` (co cham xanh cho kenh moi tao)
+### 3.3 Bảng thông tin
+- Cột hiện có:
+  - `#` (có chấm xanh cho kênh mới tạo)
   - `Channel name`
   - `Platform` (badge + icon)
   - `Channel URL`
@@ -41,74 +41,74 @@
   - `Last Sync`
   - `Status`
   - `Actions`
-- Da bo hien thi dong chu nho `external_channel_id` o cot ten kenh theo feedback.
+- Đã bỏ hiển thị dòng chữ nhỏ `external_channel_id` ở cột tên kênh theo feedback.
 
-### 3.4 Cot Actions
-- Da gom 3 hanh dong lien quan ket noi vao mot nut cha `Connection tools`.
-- Khi bam nut cha, menu con thoa xuong ben duoi (dang dọc):
+### 3.4 Cột Actions
+- Đã gom 3 hành động liên quan kết nối vào một nút cha `Connection tools`.
+- Khi bấm nút cha, menu con thả xuống bên dưới (dạng dọc):
   - `Connect/Reconnect`
   - `Disconnect`
   - `Test`
-- Moi nut con co tooltip giai thich chuc nang.
+- Mỗi nút con có tooltip giải thích chức năng.
 
-## 4. Giai thich de hieu: OAuth, Connect, Token
-### 4.1 OAuth la gi?
-- OAuth la co che cap quyen an toan.
-- Vi du de hieu:
-  - CRM can upload video len YouTube thay ban.
-  - Ban dang nhap YouTube va bam "Dong y" cap quyen cho CRM.
-  - CRM nhan duoc token de thay mat ban goi API.
-- CRM khong can biet mat khau YouTube cua ban.
+## 4. Giải thích dễ hiểu: OAuth, Connect, Token
+### 4.1 OAuth là gì?
+- OAuth là cơ chế cấp quyền an toàn.
+- Ví dụ dễ hiểu:
+  - CRM cần upload video lên YouTube thay bạn.
+  - Bạn đăng nhập YouTube và bấm "Đồng ý" cấp quyền cho CRM.
+  - CRM nhận được token để thay mặt bạn gọi API.
+- CRM không cần biết mật khẩu YouTube của bạn.
 
-### 4.2 Connect / Reconnect / Disconnect / Test la gi?
+### 4.2 Connect / Reconnect / Disconnect / Test là gì?
 - `Connect`:
-  - Thiet lap ket noi lan dau qua OAuth.
-  - Dung khi channel chua cap quyen cho CRM.
+  - Thiết lập kết nối lần đầu qua OAuth.
+  - Dùng khi channel chưa cấp quyền cho CRM.
 - `Reconnect`:
-  - Ket noi lai khi token het han hoac quyen bi loi.
-  - Ban chat la cap quyen lai.
+  - Kết nối lại khi token hết hạn hoặc quyền bị lỗi.
+  - Bản chất là cấp quyền lại.
 - `Disconnect`:
-  - Ngat ket noi channel khoi CRM.
-  - Sau do CRM khong the upload/sync channel nay.
+  - Ngắt kết nối channel khỏi CRM.
+  - Sau đó CRM không thể upload/sync channel này.
 - `Test`:
-  - Thu ket noi hien tai con hop le khong.
-  - Kiem tra token + scope.
+  - Thử kết nối hiện tại còn hợp lệ không.
+  - Kiểm tra token + scope.
 
-### 4.3 Access token va Refresh token la gi?
+### 4.3 Access token và Refresh token là gì?
 - `access_token`:
-  - Tam hieu la "ve vao cua tam thoi" de goi API.
-  - Thuong co han su dung ngan.
+  - Tạm hiểu là "vé vào cửa tạm thời" để gọi API.
+  - Thường có hạn sử dụng ngắn.
 - `refresh_token`:
-  - Dung de xin `access_token` moi khi access token het han.
-  - Khong can bat user dang nhap lai lien tuc.
+  - Dùng để xin `access_token` mới khi access token hết hạn.
+  - Không cần bắt user đăng nhập lại liên tục.
 
-### 4.4 Token expiry la gi?
-- `token_expires_at` = thoi diem access token het han.
-- Neu qua moc nay, API co the tra loi 401/unauthorized.
-- He thong can refresh token truoc hoac ngay khi het han.
+### 4.4 Token expiry là gì?
+- `token_expires_at` = thời điểm access token hết hạn.
+- Nếu quá mốc này, API có thể trả lời 401/unauthorized.
+- Hệ thống cần refresh token trước hoặc ngay khi hết hạn.
 
-### 4.5 Scopes la gi?
-- Scope = danh sach quyen CRM duoc phep lam.
-- Vi du:
+### 4.5 Scopes là gì?
+- Scope = danh sách quyền CRM được phép làm.
+- Ví dụ:
   - `upload`
   - `analytics.read`
   - `channel.read`
-- Thieu scope thi du co token van co the bi tu choi API.
+- Thiếu scope thì dù có token vẫn có thể bị từ chối API.
 
-### 4.6 Session khac token nhu the nao?
-- Session dang nhap web:
-  - Dung de giu user dang nhap CRM.
+### 4.6 Session khác token như thế nào?
+- Session đăng nhập web:
+  - Dùng để giữ user đang nhập CRM.
 - OAuth token:
-  - Dung de CRM goi API cua YouTube/TikTok/Instagram.
-- Hai cai nay khac nhau, khong thay the nhau.
+  - Dùng để CRM gọi API của YouTube/TikTok/Instagram.
+- Hai cái này khác nhau, không thay thế nhau.
 
-## 5. Quy tac bao mat can nho
-- Tuyet doi khong hien thi raw token tren UI.
-- Luu token da ma hoa o backend.
-- Han che quyen xem/chinh sua ket noi theo role.
-- Co audit log cho cac hanh dong connect/disconnect/reconnect.
+## 5. Quy tắc bảo mật cần nhớ
+- Tuyệt đối không hiển thị raw token trên UI.
+- Lưu token đã mã hóa ở backend.
+- Hạn chế quyền xem/chỉnh sửa kết nối theo role.
+- Có audit log cho các hành động connect/disconnect/reconnect.
 
-## 6. Data model de xuat (V2)
+## 6. Data model đề xuất (V2)
 - `social_accounts`:
   - `id`, `customer_id`, `platform`, `channel_name`, `channel_url`, `external_channel_id`, `status`
   - `connection_status`, `token_expires_at`, `last_sync_at`, `last_error`
@@ -120,9 +120,9 @@
 - `social_account_tokens` (backend only, encrypted):
   - `social_account_id`, `access_token_encrypted`, `refresh_token_encrypted`, `expires_at`, `refreshed_at`
 
-## 7. API contract de xuat
+## 7. API contract đề xuất
 - `GET /channels`
-- `POST /channels/provision` (mock provision hien tai)
+- `POST /channels/provision` (mock provision hiện tại)
 - `POST /channels` (manual create, phase sau)
 - `PUT /channels/{id}`
 - `DELETE /channels/{id}`
@@ -133,17 +133,17 @@
 - `POST /channels/{id}/refresh-token` (internal/job)
 
 ## 8. Acceptance criteria V2
-- Add dialog khong hien thi `Status`; Edit dialog co `Status`.
-- Action menu `Connection tools` mo theo chieu doc xuong duoi.
-- URL bam duoc va mo dung channel.
-- Bang khong vo dong xau khi man hinh hep (scroll ngang).
-- Row moi tao co cham xanh o cot `#`.
-- Hien du cac cot OAuth-ready (`Connection`, `Scopes`, `Token Expiry`, `Last Sync`).
-- UI khong hien thi access/refresh token dang text.
+- Add dialog không hiển thị `Status`; Edit dialog có `Status`.
+- Action menu `Connection tools` mở theo chiều dọc xuống dưới.
+- URL bấm được và mở đúng channel.
+- Bảng không vỡ dòng xấu khi màn hình hẹp (scroll ngang).
+- Row mới tạo có chấm xanh ở cột `#`.
+- Hiển thị đủ các cột OAuth-ready (`Connection`, `Scopes`, `Token Expiry`, `Last Sync`).
+- UI không hiển thị access/refresh token dạng text.
 
-## 9. Ghi chu cho PM/BA (non-technical)
-- Neu team chua can upload tu dong ngay:
-  - Co the chay MVP voi link + status.
-- Neu muon upload/sync that:
-  - Bat buoc phai co OAuth/token/scope.
-  - Day la ly do phan `Connection/Token` xuat hien trong V2.
+## 9. Ghi chú cho PM/BA (non-technical)
+- Nếu team chưa cần upload tự động ngay:
+  - Có thể chạy MVP với link + status.
+- Nếu muốn upload/sync thật:
+  - Bắt buộc phải có OAuth/token/scope.
+  - Đây là lý do phần `Connection/Token` xuất hiện trong V2.
