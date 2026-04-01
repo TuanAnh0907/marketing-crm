@@ -1,8 +1,8 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import {Head, Link, useForm} from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const {data, setData, post, processing, errors, reset} = useForm({
         name: '',
         email: '',
         password: '',
@@ -18,7 +18,7 @@ export default function Register() {
 
     return (
         <GuestLayout title="Create your account">
-            <Head title="Register" />
+            <Head title="Register"/>
 
             <form onSubmit={submit} className="space-y-5">
                 {/* Name */}

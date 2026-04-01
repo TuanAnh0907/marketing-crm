@@ -1,8 +1,8 @@
-import { usePage } from '@inertiajs/react';
-import { Megaphone } from 'lucide-react';
+import {usePage} from '@inertiajs/react';
+import {Megaphone} from 'lucide-react';
 
-export default function GuestLayout({ title, children }) {
-    const { appName } = usePage().props;
+export default function GuestLayout({title, children}) {
+    const {appName} = usePage().props;
 
     return (
         <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
@@ -10,7 +10,7 @@ export default function GuestLayout({ title, children }) {
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-xl mb-4">
-                        <Megaphone size={24} className="text-white" />
+                        <Megaphone size={24} className="text-white"/>
                     </div>
                     <h1 className="text-xl font-bold text-white">{appName}</h1>
                     {title && (

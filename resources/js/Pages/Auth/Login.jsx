@@ -1,8 +1,8 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import {Head, Link, useForm} from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
 
-export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function Login({status, canResetPassword}) {
+    const {data, setData, post, processing, errors, reset} = useForm({
         email: '',
         password: '',
         remember: false,
@@ -10,12 +10,12 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('login'), { onFinish: () => reset('password') });
+        post(route('login'), {onFinish: () => reset('password')});
     };
 
     return (
         <GuestLayout title="Sign in to your account">
-            <Head title="Login" />
+            <Head title="Login"/>
 
             {status && (
                 <div className="mb-4 text-sm text-green-400 bg-green-400/10 rounded-lg px-4 py-3">
