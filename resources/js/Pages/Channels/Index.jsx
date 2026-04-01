@@ -24,6 +24,7 @@ export default function Index({ channels = [] }) {
     const [isSaving, setIsSaving] = useState(false);
     const [notice, setNotice] = useState(null);
     const [openToolsId, setOpenToolsId] = useState(null);
+    const [openInfoId, setOpenInfoId] = useState(null);
 
     const isEditing = dialogMode === 'edit' && editingId !== null;
 
@@ -105,6 +106,7 @@ export default function Index({ channels = [] }) {
     const deleteItem = (id) => {
         setItems((prev) => prev.filter((item) => item.id !== id));
         setOpenToolsId((prev) => (prev === id ? null : prev));
+        setOpenInfoId((prev) => (prev === id ? null : prev));
         if (editingId === id) {
             closeDialog();
         }
@@ -112,6 +114,10 @@ export default function Index({ channels = [] }) {
 
     const toggleTools = (id) => {
         setOpenToolsId((prev) => (prev === id ? null : id));
+    };
+
+    const toggleMoreInfo = (id) => {
+        setOpenInfoId((prev) => (prev === id ? null : id));
     };
 
     const reconnectChannel = (id) => {
@@ -258,10 +264,7 @@ export default function Index({ channels = [] }) {
                                 <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Channel name')}</th>
                                 <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Platform')}</th>
                                 <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Channel URL')}</th>
-                                <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Connection')}</th>
-                                <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Scopes')}</th>
-                                <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Token Expiry')}</th>
-                                <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Last Sync')}</th>
+                                <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('More Informations')}</th>
                                 <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Status')}</th>
                                 <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Actions')}</th>
                             </tr>
@@ -299,28 +302,49 @@ export default function Index({ channels = [] }) {
                                             <ExternalLink size={13} />
                                         </a>
                                     </td>
-                                    <td className="py-3 px-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-2.5 py-1 rounded-full border capitalize ${getConnectionBadgeClass(item.connection_status || 'disconnected')}`}>
-                                            {item.connection_status || 'disconnected'}
-                                        </span>
+                                    <td className="py-3 px-4 align-top">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleMoreInfo(item.id)}
+                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 whitespace-nowrap"
+                                        >
+                                            {openInfoId === item.id ? __('Hide info') : __('View info')}
+                                            <ChevronDown size={14} className={`${openInfoId === item.id ? 'rotate-180' : ''} transition-transform`} />
+                                        </button>
+
+                                        {openInfoId === item.id && (
+                                            <div className="mt-2 min-w-[320px] rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2 text-xs">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="font-semibold text-slate-600">{__('Connection')}</span>
+                                                    <span className={`inline-flex px-2 py-0.5 rounded-full border capitalize ${getConnectionBadgeClass(item.connection_status || 'disconnected')}`}>
+                                                        {item.connection_status || 'disconnected'}
+                                                    </span>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <p className="font-semibold text-slate-600">{__('Scopes')}</p>
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {(item.granted_scopes || []).map((scope) => (
+                                                            <span key={scope} className="inline-flex px-2 py-0.5 rounded-md text-xs border border-cyan-200 bg-cyan-50 text-cyan-700">
+                                                                {scope}
+                                                            </span>
+                                                        ))}
+                                                        {(item.granted_scopes || []).length === 0 && <span className="text-slate-400">--</span>}
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="font-semibold text-slate-600">{__('Token Expiry')}</span>
+                                                    <span className="text-slate-600">{formatDate(item.token_expires_at)}</span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="font-semibold text-slate-600">{__('Last Sync')}</span>
+                                                    <span className="text-slate-600">{formatDate(item.last_sync_at)}</span>
+                                                </div>
+                                            </div>
+                                        )}
                                     </td>
-                                    <td className="py-3 px-4 whitespace-nowrap">
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {(item.granted_scopes || []).slice(0, 2).map((scope) => (
-                                                <span key={scope} className="inline-flex px-2 py-0.5 rounded-md text-xs border border-cyan-200 bg-cyan-50 text-cyan-700">
-                                                    {scope}
-                                                </span>
-                                            ))}
-                                            {(item.granted_scopes || []).length > 2 && (
-                                                <span className="inline-flex px-2 py-0.5 rounded-md text-xs border border-slate-200 bg-slate-50 text-slate-700">
-                                                    +{(item.granted_scopes || []).length - 2}
-                                                </span>
-                                            )}
-                                            {(item.granted_scopes || []).length === 0 && <span className="text-slate-400">--</span>}
-                                        </div>
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-slate-600 whitespace-nowrap">{formatDate(item.token_expires_at)}</td>
-                                    <td className="py-3 px-4 text-sm text-slate-600 whitespace-nowrap">{formatDate(item.last_sync_at)}</td>
                                     <td className="py-3 px-4 whitespace-nowrap">
                                         <span className={`inline-flex px-2.5 py-1 rounded-full border capitalize ${getStatusBadgeClass(item.status || 'active')}`}>
                                             {item.status || 'active'}
