@@ -23,4 +23,5 @@ class SettingController extends Controller
     {
         return Inertia::render('Settings/Security');
     }
+
 }

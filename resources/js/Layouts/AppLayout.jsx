@@ -1,12 +1,14 @@
 import {Link, router, usePage} from '@inertiajs/react';
 import {useState} from 'react';
-import {BarChart2, ChevronRight, Globe, LayoutDashboard, LogOut, Megaphone, Menu, Settings, Users, X,} from 'lucide-react';
+import {BarChart2, ChevronRight, Globe, LayoutDashboard, Link2, LogOut, Megaphone, Menu, Settings, Users, X,} from 'lucide-react';
 import { useI18n } from '../translate';
 import LanguageSwitcher from '../Components/LanguageSwitcher';
 import {Disclosure} from "@headlessui/react";
 
 const navItems = [
     {label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard},
+    {label: 'Channels', href: '/channels', icon: Link2},
+    {label: 'KOL', href: '/kols', icon: Users, matchPrefix: '/kols'},
     {label: 'Contacts', href: '/contacts', icon: Users},
     {
         label: 'Campaigns',
@@ -79,7 +81,8 @@ export default function AppLayout({title = 'Dashboard', children}) {
                     {navItems.map((item) => {
                         const hasChildren = !!item.children;
                         const isChildActive = hasChildren && item.children.some(child => currentPath === child.href);
-                        const isActive = currentPath === item.href || isChildActive;
+                        const isPrefixMatch = item.matchPrefix ? currentPath.startsWith(item.matchPrefix) : false;
+                        const isActive = currentPath === item.href || isChildActive || isPrefixMatch;
 
                         if (hasChildren) {
                             return (
