@@ -49,8 +49,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/kols', [KolController::class, 'index'])
         ->name('kols.index');
-    Route::get('/kols/{slug}', [KolController::class, 'show'])
-        ->name('kols.show');
 
     Route::get('/settings/profile', [SettingController::class, 'profile'])
         ->name('settings.profile');

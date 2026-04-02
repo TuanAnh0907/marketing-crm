@@ -68,15 +68,4 @@ class KolController extends Controller
             'kols' => $this->kolDataset(),
         ]);
     }
-
-    public function show(Request $request, string $slug): Response
-    {
-        $kol = collect($this->kolDataset())->firstWhere('slug', $slug);
-
-        abort_if(!$kol, 404);
-
-        return Inertia::render('KOLs/Show', [
-            'kol' => $kol,
-        ]);
-    }
 }

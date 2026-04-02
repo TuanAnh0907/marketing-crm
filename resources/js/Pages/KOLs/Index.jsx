@@ -1,5 +1,5 @@
 import AppLayout from '@/Layouts/AppLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import AddDialog from './AddDialog';
@@ -96,22 +96,73 @@ const makeSlug = (name) => {
     return slug || 'kol';
 };
 
+const wait = (ms) => new Promise((resolve) => {
+    setTimeout(resolve, ms);
+});
+
+const buildGeneratedKolImage = (form) => {
+    const seedText = [
+        form.name,
+        form.gender,
+        form.apparent_age,
+        form.ethnicity,
+        form.face_shape,
+        form.default_expression,
+        form.eye_type,
+        form.hair_style,
+        form.hair_color,
+        form.skin_tone,
+        form.body_type,
+    ].join('|');
+
+    const seed = hashString(seedText);
+    const hueA = seed % 360;
+    const hueB = (seed + 97) % 360;
+    const initials = (form.name || 'KOL')
+        .trim()
+        .split(/\s+/)
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+
+    const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="960" viewBox="0 0 768 960">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(${hueA} 78% 62%)"/>
+      <stop offset="100%" stop-color="hsl(${hueB} 76% 48%)"/>
+    </linearGradient>
+  </defs>
+  <rect width="768" height="960" fill="url(#bg)"/>
+  <circle cx="384" cy="280" r="120" fill="rgba(255,255,255,0.2)"/>
+  <rect x="174" y="450" width="420" height="300" rx="36" fill="rgba(255,255,255,0.2)"/>
+  <text x="384" y="320" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="88" font-weight="700">${initials || 'K'}</text>
+  <text x="384" y="820" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="38" font-weight="600">${(form.name || 'KOL Profile').replace(/&/g, 'and')}</text>
+</svg>`;
+
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+};
+
 export default function Index({ kols: initialKols = [] }) {
     const { __ } = useI18n();
     const [items, setItems] = useState(() => initialKols.map(normalizeKol));
     const [dialogOpen, setDialogOpen] = useState(false);
     const [form, setForm] = useState(createEmptyForm);
     const [notice, setNotice] = useState(null);
+    const [isCreatingPreview, setIsCreatingPreview] = useState(false);
 
     const openAddDialog = () => {
         setForm(createEmptyForm());
         setDialogOpen(true);
         setNotice(null);
+        setIsCreatingPreview(false);
     };
 
     const closeDialog = () => {
         setDialogOpen(false);
         setForm(createEmptyForm());
+        setIsCreatingPreview(false);
     };
 
     const updateForm = (key, value) => {
@@ -141,8 +192,34 @@ export default function Index({ kols: initialKols = [] }) {
         reader.readAsDataURL(file);
     };
 
-    const handleSubmit = (e) => {
+    const handleCreateKolPreview = async (e) => {
         e.preventDefault();
+
+        if (!form.name.trim()) {
+            setNotice({ type: 'error', message: __('Please fill in KOL Name.') });
+            return;
+        }
+
+        setIsCreatingPreview(true);
+
+        try {
+            await wait(1200);
+            const generatedImage = buildGeneratedKolImage(form);
+
+            setForm((prev) => ({
+                ...prev,
+                image_url: generatedImage,
+                image_file: null,
+                image_locked: false,
+            }));
+
+            setNotice({ type: 'success', message: __('KOL image has been generated.') });
+        } finally {
+            setIsCreatingPreview(false);
+        }
+    };
+
+    const handleAddKolToList = () => {
 
         if (!form.name.trim()) {
             setNotice({ type: 'error', message: __('Please fill in KOL Name.') });
@@ -235,13 +312,7 @@ export default function Index({ kols: initialKols = [] }) {
                                     {TABLE_COLUMNS.map((column) => (
                                         <td key={column.key} className="py-3 px-4 text-gray-800 whitespace-nowrap">
                                             {column.key === 'name' ? (
-                                                kol.is_local ? (
-                                                    <span className="font-semibold text-indigo-700">{kol.name}</span>
-                                                ) : (
-                                                    <Link href={`/kols/${kol.slug}`} className="font-semibold text-indigo-700 hover:underline">
-                                                        {kol.name}
-                                                    </Link>
-                                                )
+                                                <span className="font-semibold text-indigo-700">{kol.name}</span>
                                             ) : column.key === 'image' ? (
                                                 kol.image_url ? (
                                                     <div className="group relative inline-block">
@@ -298,9 +369,11 @@ export default function Index({ kols: initialKols = [] }) {
                 open={dialogOpen}
                 form={form}
                 onClose={closeDialog}
-                onSubmit={handleSubmit}
+                onCreateKolPreview={handleCreateKolPreview}
+                onAddKolToList={handleAddKolToList}
                 onUpdateField={updateForm}
                 onImageSelect={handleImageSelect}
+                isCreatingPreview={isCreatingPreview}
             />
         </AppLayout>
     );

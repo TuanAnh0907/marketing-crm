@@ -1,4 +1,4 @@
-import { Plus, Upload, UserRound, X } from 'lucide-react';
+import { Plus, Upload, Wand2, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { useRef } from 'react';
 import { useI18n } from '@/translate';
@@ -131,9 +131,11 @@ export default function AddDialog({
     open,
     form,
     onClose,
-    onSubmit,
+    onCreateKolPreview,
+    onAddKolToList,
     onUpdateField,
     onImageSelect,
+    isCreatingPreview,
 }) {
     const { __ } = useI18n();
     const imageInputRef = useRef(null);
@@ -162,7 +164,7 @@ export default function AddDialog({
             <div className="absolute inset-0 overflow-y-auto p-4 sm:p-6">
                 <div
                     className="mx-auto overflow-hidden rounded-[32px] border border-indigo-100 bg-white shadow-[0_35px_100px_-25px_rgba(79,70,229,0.35)]"
-                    style={{ width: 'min(33vw, 880px)' }}
+                    style={{ width: 'min(86vw, 1280px)' }}
                 >
                     <div className="sticky top-0 z-20 flex items-center justify-between rounded-t-[32px] border-b border-indigo-100 bg-purple-600 px-4 py-3 text-white">
                         <div>
@@ -181,12 +183,12 @@ export default function AddDialog({
                         </button>
                     </div>
 
-                    <form onSubmit={onSubmit} className="p-3">
-                        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_220px]">
+                    <form onSubmit={onCreateKolPreview} className="p-3">
+                        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
                             {/* Form panel */}
                             <div className="min-w-0 rounded-3xl border border-slate-200 bg-white p-3 sm:p-4">
-                                <div className="flex gap-20">
-                                    <div className="space-y-3 flex-1">
+                                <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-8">
+                                    <div className="space-y-3 w-full max-w-[320px]">
                                         {LEFT_FIELDS.map((fieldKey) => (
                                             <RenderField
                                                 key={fieldKey}
@@ -198,7 +200,7 @@ export default function AddDialog({
                                         ))}
                                     </div>
 
-                                    <div className="space-y-3 flex-1 flex flex-col justify-between">
+                                    <div className="space-y-3 w-full flex flex-col justify-between">
                                         <div className="space-y-3">
                                             {RIGHT_FIELDS.map((fieldKey) => (
                                                 <RenderField
@@ -211,72 +213,87 @@ export default function AddDialog({
                                             ))}
                                         </div>
 
-                                        <button
-                                            type="submit"
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-700 w-fit"
-                                        >
-                                            <Plus size={16} />
-                                            {__('Create KOL')}
-                                        </button>
+                                        <div className="flex flex-wrap items-center gap-3">
+                                            <button
+                                                type="submit"
+                                                disabled={isCreatingPreview || form.image_locked}
+                                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                                            >
+                                                <Wand2 size={16} />
+                                                {isCreatingPreview ? __('Creating...') : __('Create KOL')}
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={onAddKolToList}
+                                                disabled={!form.image_url || isCreatingPreview}
+                                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2 font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                            >
+                                                <Plus size={16} />
+                                                {__('Add KOL to list')}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Preview panel */}
                             <div className="min-w-0 rounded-3xl border border-slate-200 bg-slate-50 p-2">
-                                <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                                <div className="flex h-full min-h-[540px] flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                                     <div className="text-center text-sm font-semibold text-slate-800">
-                                        {__('Choose KOL from your computer')}
+                                        {__('Or choose KOL from your computer')}
                                     </div>
 
-                                    <div className="mt-2 flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-2">
-                                        {form.image_url ? (
-                                            <img
-                                                src={form.image_url}
-                                                alt="KOL preview"
-                                                className="h-10 w-10 shrink-0 rounded-lg border border-slate-200 object-cover"
+                                    <div className="mt-2">
+                                        <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-indigo-300 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100">
+                                            <Upload size={16} />
+                                            {__('Upload image')}
+                                            <input
+                                                ref={imageInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={onImageSelect}
+                                                className="hidden"
                                             />
-                                        ) : (
-                                            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400">
-                                                <UserRound size={16} />
-                                            </span>
-                                        )}
+                                        </label>
+                                    </div>
 
-                                        <div className="min-w-0 flex-1">
-                                            <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-indigo-300 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100">
-                                                <Upload size={16} />
-                                                {__('Upload image')}
-                                                <input
-                                                    ref={imageInputRef}
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={onImageSelect}
-                                                    className="hidden"
+                                    <div className="relative mt-3 flex min-h-[340px] flex-1 items-center justify-center rounded-[22px] border border-dashed border-slate-200 bg-slate-50 p-4">
+                                        {isCreatingPreview ? (
+                                            <div className="flex flex-col items-center gap-3 text-slate-500">
+                                                <span className="inline-flex h-12 w-12 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+                                                <span className="text-sm font-medium">{__('Generating KOL image...')}</span>
+                                            </div>
+                                        ) : form.image_url ? (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    onClick={clearImageSelection}
+                                                    className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-200 bg-white text-rose-600 shadow-sm hover:bg-rose-50"
+                                                    aria-label={__('Clear selected image')}
+                                                    title={__('Clear selected image')}
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                                <img
+                                                    src={form.image_url}
+                                                    alt="KOL preview"
+                                                    className="max-h-[300px] w-full rounded-2xl object-contain"
                                                 />
-                                            </label>
-
-                                            <p className="mt-2 truncate text-xs text-slate-500">
-                                                {form.image_url ? __('Image selected') : __('Choose a KOL image from your computer')}
-                                            </p>
-                                        </div>
-
-                                        {form.image_url && (
-                                            <button
-                                                type="button"
-                                                onClick={clearImageSelection}
-                                                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-rose-200 bg-white text-rose-600 hover:bg-rose-50"
-                                                aria-label={__('Clear selected image')}
-                                                title={__('Clear selected image')}
-                                            >
-                                                <X size={14} />
-                                            </button>
+                                            </>
+                                        ) : (
+                                            <div className="text-center text-sm text-slate-400">
+                                                {__('Preview of KOL will appear here.')}
+                                            </div>
                                         )}
                                     </div>
 
                                     <p className="mt-3 text-xs leading-relaxed text-slate-500">
-                                        {form.image_locked
-                                            ? __('Image uploaded. Only Name KOL can be edited.')
-                                            : __('Choose a KOL image from your computer to auto-fill the profile attributes.')}
+                                        {isCreatingPreview
+                                            ? __('Creating KOL image from the selected attributes...')
+                                            : form.image_locked
+                                                ? __('Image uploaded. Only Name KOL can be edited.')
+                                                : __('Choose a KOL image from your computer to auto-fill the profile attributes.')}
                                     </p>
                                 </div>
                             </div>
