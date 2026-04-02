@@ -161,13 +161,13 @@ export default function AddDialog({
 
             <div className="absolute inset-0 overflow-y-auto p-4 sm:p-6">
                 <div
-                    className="mx-auto rounded-[24px] border border-indigo-100 bg-white shadow-[0_35px_100px_-25px_rgba(79,70,229,0.35)]"
-                    style={{ width: 'min(66vw, 880px)' }}
+                    className="mx-auto overflow-hidden rounded-[32px] border border-indigo-100 bg-white shadow-[0_35px_100px_-25px_rgba(79,70,229,0.35)]"
+                    style={{ width: 'min(33vw, 880px)' }}
                 >
-                    <div className="sticky top-0 z-20 flex items-center justify-between rounded-t-[24px] border-b border-indigo-100 bg-gradient-to-r from-indigo-600 via-purple-700 to-purple-800 px-4 py-3 text-white">
+                    <div className="sticky top-0 z-20 flex items-center justify-between rounded-t-[32px] border-b border-indigo-100 bg-purple-600 px-4 py-3 text-white">
                         <div>
                             <h3 className="text-lg font-bold">{__('Add New KOL')}</h3>
-                            <p className="mt-1 text-xs text-indigo-100 sm:text-sm">
+                            <p className="mt-1 text-xs text-purple-100 sm:text-sm">
                                 {__('Upload a KOL image to auto-fill profile attributes. After upload, only Name remains editable.')}
                             </p>
                         </div>
@@ -185,8 +185,8 @@ export default function AddDialog({
                         <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_220px]">
                             {/* Form panel */}
                             <div className="min-w-0 rounded-3xl border border-slate-200 bg-white p-3 sm:p-4">
-                                <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-8 md:items-start">
-                                    <div className="space-y-3 w-full">
+                                <div className="flex gap-20">
+                                    <div className="space-y-3 flex-1">
                                         {LEFT_FIELDS.map((fieldKey) => (
                                             <RenderField
                                                 key={fieldKey}
@@ -198,26 +198,26 @@ export default function AddDialog({
                                         ))}
                                     </div>
 
-                                    <div className="space-y-3 w-full">
-                                        {RIGHT_FIELDS.map((fieldKey) => (
-                                            <RenderField
-                                                key={fieldKey}
-                                                field={getFieldByKey(fieldKey)}
-                                                form={form}
-                                                onUpdateField={onUpdateField}
-                                                __={__}
-                                            />
-                                        ))}
-
-                                        <div className="flex justify-end pt-8">
-                                            <button
-                                                type="submit"
-                                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700"
-                                            >
-                                                <Plus size={16} />
-                                                {__('Create KOL')}
-                                            </button>
+                                    <div className="space-y-3 flex-1 flex flex-col justify-between">
+                                        <div className="space-y-3">
+                                            {RIGHT_FIELDS.map((fieldKey) => (
+                                                <RenderField
+                                                    key={fieldKey}
+                                                    field={getFieldByKey(fieldKey)}
+                                                    form={form}
+                                                    onUpdateField={onUpdateField}
+                                                    __={__}
+                                                />
+                                            ))}
                                         </div>
+
+                                        <button
+                                            type="submit"
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-700 w-fit"
+                                        >
+                                            <Plus size={16} />
+                                            {__('Create KOL')}
+                                        </button>
                                     </div>
                                 </div>
                             </div>

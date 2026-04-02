@@ -7,6 +7,7 @@ import { useI18n } from '@/translate';
 
 const TABLE_COLUMNS = [
     { key: 'name', label: 'Name' },
+    { key: 'image', label: 'Image' },
     { key: 'gender', label: 'Gender' },
     { key: 'apparent_age', label: 'Apparent Age' },
     { key: 'ethnicity', label: 'Ethnicity' },
@@ -225,7 +226,6 @@ export default function Index({ kols: initialKols = [] }) {
                                         {__(column.label)}
                                     </th>
                                 ))}
-                                <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Image')}</th>
                                 <th className="text-left py-3 px-4 font-semibold text-gray-700 whitespace-nowrap">{__('Actions')}</th>
                             </tr>
                         </thead>
@@ -242,6 +242,33 @@ export default function Index({ kols: initialKols = [] }) {
                                                         {kol.name}
                                                     </Link>
                                                 )
+                                            ) : column.key === 'image' ? (
+                                                kol.image_url ? (
+                                                    <div className="group relative inline-block">
+                                                        <img
+                                                            src={kol.image_url}
+                                                            alt={kol.name}
+                                                            className="h-12 w-12 rounded-full border border-gray-200 object-cover shadow-sm"
+                                                        />
+                                                        <div className="pointer-events-none absolute left-1/2 top-full z-30 mt-3 hidden -translate-x-1/2 group-hover:block">
+                                                            <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-2xl">
+                                                                <img
+                                                                    src={kol.image_url}
+                                                                    alt={`${kol.name} preview`}
+                                                                    className="h-56 w-56 rounded-xl object-cover"
+                                                                />
+                                                                <div className="mt-3 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700">
+                                                                    <Eye size={14} />
+                                                                    {__('Image preview')}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs text-slate-500 bg-slate-50">
+                                                        {__('No image')}
+                                                    </span>
+                                                )
                                             ) : (
                                                 <span className="inline-flex px-2.5 py-1 rounded-full bg-gray-100 text-gray-700">
                                                     {kol[column.key]}
@@ -249,35 +276,6 @@ export default function Index({ kols: initialKols = [] }) {
                                             )}
                                         </td>
                                     ))}
-
-                                    <td className="py-3 px-4 whitespace-nowrap">
-                                        {kol.image_url ? (
-                                            <div className="group relative inline-block">
-                                                <img
-                                                    src={kol.image_url}
-                                                    alt={kol.name}
-                                                    className="h-12 w-12 rounded-full border border-gray-200 object-cover shadow-sm"
-                                                />
-                                                <div className="pointer-events-none absolute left-1/2 top-full z-30 mt-3 hidden -translate-x-1/2 group-hover:block">
-                                                    <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-2xl">
-                                                        <img
-                                                            src={kol.image_url}
-                                                            alt={`${kol.name} preview`}
-                                                            className="h-56 w-56 rounded-xl object-cover"
-                                                        />
-                                                        <div className="mt-3 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700">
-                                                            <Eye size={14} />
-                                                            {__('Image preview')}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <span className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs text-slate-500 bg-slate-50">
-                                                {__('No image')}
-                                            </span>
-                                        )}
-                                    </td>
 
                                     <td className="py-3 px-4 whitespace-nowrap">
                                         <button
