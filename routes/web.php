@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KolController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +41,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('channels.index');
     Route::post('/channels/provision', [ChannelsController::class, 'provision'])
         ->name('channels.provision');
+
+    Route::get('/videos', [VideoController::class, 'index'])
+        ->name('videos.index');
+    Route::post('/videos/{video}/publish', [VideoController::class, 'publish'])
+        ->name('videos.publish');
 
     Route::get('/kols', [KolController::class, 'index'])
         ->name('kols.index');

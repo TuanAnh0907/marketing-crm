@@ -1,6 +1,6 @@
 import {Link, router, usePage} from '@inertiajs/react';
 import {useState} from 'react';
-import {BarChart2, ChevronRight, Globe, LayoutDashboard, Link2, LogOut, Megaphone, Menu, Settings, Users, X,} from 'lucide-react';
+import {BarChart2, ChevronRight, Globe, LayoutDashboard, Link2, LogOut, Megaphone, Menu, Settings, Users, Video, X,} from 'lucide-react';
 import { useI18n } from '../translate';
 import LanguageSwitcher from '../Components/LanguageSwitcher';
 import {Disclosure} from "@headlessui/react";
@@ -8,6 +8,7 @@ import {Disclosure} from "@headlessui/react";
 const navItems = [
     {label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard},
     {label: 'Channels', href: '/channels', icon: Link2},
+    {label: 'Videos', href: '/videos', icon: Video},
     {label: 'KOL', href: '/kols', icon: Users, matchPrefix: '/kols'},
     {label: 'Contacts', href: '/contacts', icon: Users},
     {
