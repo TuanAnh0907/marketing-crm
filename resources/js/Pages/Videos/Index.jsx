@@ -51,6 +51,8 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [notice, setNotice] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [videoStatusFilter, setVideoStatusFilter] = useState('all');
+    const [postStatusFilter, setPostStatusFilter] = useState('all');
 
     const activeChannels = useMemo(
         () => channelOptions.filter((channel) => channel.status === 'active'),
@@ -59,18 +61,16 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
 
     const filteredItems = useMemo(() => {
         const query = searchTerm.trim().toLowerCase();
-
-        if (!query) {
-            return items;
-        }
-
         return items.filter((item) => {
             const productId = (item.product_id || `PRD-${String(item.id).padStart(6, '0')}`).toLowerCase();
             const productName = (item.product_name || '').toLowerCase();
+            const matchesQuery = !query || productId.includes(query) || productName.includes(query);
+            const matchesVideoStatus = videoStatusFilter === 'all' || item.video_status === videoStatusFilter;
+            const matchesPostStatus = postStatusFilter === 'all' || item.post_status === postStatusFilter;
 
-            return productId.includes(query) || productName.includes(query);
+            return matchesQuery && matchesVideoStatus && matchesPostStatus;
         });
-    }, [items, searchTerm]);
+    }, [items, searchTerm, videoStatusFilter, postStatusFilter]);
 
     const isEditing = dialogMode === 'edit' && editingId !== null;
 
@@ -341,21 +341,45 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
 
                 <div className="flex justify-end">
                     <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="relative w-full sm:max-w-sm">
-                            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder={__('Search by product name or ID')}
-                                className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
-                            />
+                        <div className="flex w-full flex-col gap-3 lg:flex-row lg:items-center">
+                            <div className="relative w-full sm:max-w-sm">
+                                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    placeholder={__('Search by product name or ID')}
+                                    className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                                />
+                            </div>
+
+                            <select
+                                value={videoStatusFilter}
+                                onChange={(e) => setVideoStatusFilter(e.target.value)}
+                                className="w-full lg:w-44 rounded-xl border border-slate-300 bg-white py-2.5 px-3 text-sm text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
+                            >
+                                <option value="all">{__('All video status')}</option>
+                                <option value="pending">{__('Pending')}</option>
+                                <option value="not_uploaded">{__('Not uploaded')}</option>
+                                <option value="uploaded">{__('Uploaded')}</option>
+                            </select>
+
+                            <select
+                                value={postStatusFilter}
+                                onChange={(e) => setPostStatusFilter(e.target.value)}
+                                className="w-full lg:w-40 rounded-xl border border-slate-300 bg-white py-2.5 px-3 text-sm text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
+                            >
+                                <option value="all">{__('All post status')}</option>
+                                <option value="idle">{__('Idle')}</option>
+                                <option value="success">{__('Success')}</option>
+                                <option value="failed">{__('Failed')}</option>
+                            </select>
                         </div>
 
                         <button
                             type="button"
                             onClick={openAddDialog}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 text-white font-semibold px-4 py-2 hover:bg-emerald-700"
+                            className="inline-flex min-w-[190px] items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-emerald-600 text-white font-semibold px-5 py-2 hover:bg-emerald-700"
                         >
                             <Plus size={16} />
                             {__('Add New Video')}
@@ -547,7 +571,10 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
 
                                 <form onSubmit={saveVideo} className="p-6 space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
-                                        <p className="text-sm font-semibold text-gray-700">{__('Product Name')}</p>
+                                        <p className="text-sm font-semibold text-gray-700">
+                                            {__('Product Name')}
+                                            <span className="ml-1 text-rose-500">*</span>
+                                        </p>
                                         <input
                                             type="text"
                                             value={form.product_name}
@@ -558,7 +585,10 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
-                                        <p className="text-sm font-semibold text-gray-700">{__('Product Photo')}</p>
+                                        <p className="text-sm font-semibold text-gray-700">
+                                            {__('Product Photo')}
+                                            <span className="ml-1 text-rose-500">*</span>
+                                        </p>
                                         <div className="md:col-span-2 flex items-center gap-3 flex-wrap">
                                             <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-sky-300 bg-sky-50 text-sky-700 hover:bg-sky-100 cursor-pointer text-sm font-semibold transition-colors shadow-sm">
                                                 <ImagePlus size={16} />
@@ -592,7 +622,10 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 items-start gap-3">
-                                        <p className="text-sm font-semibold text-gray-700 mt-2">{__('Product Description')}</p>
+                                        <p className="text-sm font-semibold text-gray-700 mt-2">
+                                            {__('Product Description')}
+                                            <span className="ml-1 text-rose-500">*</span>
+                                        </p>
                                         <textarea
                                             rows={3}
                                             value={form.product_description}
@@ -640,7 +673,10 @@ export default function Index({ videos = [], channelOptions = [], kolOptions = [
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
-                                        <p className="text-sm font-semibold text-gray-700">{__('Number of videos')}</p>
+                                        <p className="text-sm font-semibold text-gray-700">
+                                            {__('Number of videos')}
+                                            <span className="ml-1 text-rose-500">*</span>
+                                        </p>
                                         <div className="md:col-span-2 flex items-center gap-3 flex-wrap">
                                             <div className="inline-flex items-center overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
                                                 <button

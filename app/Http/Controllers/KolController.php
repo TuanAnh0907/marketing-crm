@@ -24,6 +24,7 @@ class KolController extends Controller
                 'hair_color' => 'black',
                 'skin_tone' => 'light-warm',
                 'body_type' => 'slim',
+                'image_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=80',
                 'tiktok_url' => 'https://www.tiktok.com/@tiktokmademebuyit1107',
             ],
             [
@@ -39,6 +40,7 @@ class KolController extends Controller
                 'hair_color' => 'light-brown',
                 'skin_tone' => 'light',
                 'body_type' => 'fit',
+                'image_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80',
                 'tiktok_url' => 'https://www.tiktok.com/',
             ],
             [
@@ -54,6 +56,7 @@ class KolController extends Controller
                 'hair_color' => 'ash-brown',
                 'skin_tone' => 'light',
                 'body_type' => 'slim',
+                'image_url' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=240&q=80',
                 'tiktok_url' => 'https://www.tiktok.com/',
             ],
         ];
