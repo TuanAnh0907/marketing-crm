@@ -67,21 +67,13 @@ const FORM_FIELDS = [
     },
 ];
 
-const LEFT_FIELDS = [
-    'name',
-    'gender',
-    'apparent_age',
-    'ethnicity',
-    'face_shape',
-    'default_expression',
-];
-
-const RIGHT_FIELDS = [
-    'eye_type',
-    'hair_style',
-    'hair_color',
-    'skin_tone',
-    'body_type',
+const FIELD_ROWS = [
+    ['name', 'gender'],
+    ['apparent_age', 'ethnicity'],
+    ['face_shape', 'default_expression'],
+    ['eye_type', 'hair_style'],
+    ['hair_color', 'skin_tone'],
+    ['body_type'],
 ];
 
 const getFieldByKey = (key) => FORM_FIELDS.find((field) => field.key === key);
@@ -92,7 +84,7 @@ function RenderField({ field, form, onUpdateField, __ }) {
     const isLocked = form.image_locked && field.key !== 'name';
 
     return (
-        <div className="w-full min-w-0">
+        <div className="w-full min-w-0 max-w-full overflow-hidden">
             <label className="mb-2 block text-[0.85rem] font-semibold text-slate-700">
                 {__(field.label)}
                 {field.key === 'name' && <span className="ml-1 text-rose-500">*</span>}
@@ -103,7 +95,7 @@ function RenderField({ field, form, onUpdateField, __ }) {
                     value={form[field.key]}
                     onChange={(e) => onUpdateField(field.key, e.target.value)}
                     disabled={isLocked}
-                    className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-[0.9rem] focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-slate-100 disabled:text-slate-500"
+                    className="block h-10 w-full min-w-0 max-w-full rounded-xl border border-slate-300 bg-white px-3 text-[0.9rem] focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-slate-100 disabled:text-slate-500"
                 >
                     {field.options.map((option) => (
                         <option key={option} value={option}>
@@ -117,7 +109,7 @@ function RenderField({ field, form, onUpdateField, __ }) {
                     value={form[field.key]}
                     onChange={(e) => onUpdateField(field.key, e.target.value)}
                     readOnly={isLocked && field.key !== 'name'}
-                    className={`h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-[0.9rem] focus:border-indigo-500 focus:ring-indigo-500 ${
+                    className={`block h-10 w-full min-w-0 max-w-full rounded-xl border border-slate-300 bg-white px-3 text-[0.9rem] focus:border-indigo-500 focus:ring-indigo-500 ${
                         isLocked && field.key !== 'name' ? 'bg-slate-100 text-slate-500' : ''
                     }`}
                     placeholder={field.label}
@@ -164,7 +156,7 @@ export default function AddDialog({
             <div className="absolute inset-0 overflow-y-auto p-4 sm:p-6">
                 <div
                     className="mx-auto overflow-hidden rounded-[32px] border border-indigo-100 bg-white shadow-[0_35px_100px_-25px_rgba(79,70,229,0.35)]"
-                    style={{ width: 'min(86vw, 1280px)' }}
+                    style={{ width: 'min(96vw, 1080px)' }}
                 >
                     <div className="sticky top-0 z-20 flex items-center justify-between rounded-t-[32px] border-b border-indigo-100 bg-purple-600 px-4 py-3 text-white">
                         <div>
@@ -183,60 +175,8 @@ export default function AddDialog({
                         </button>
                     </div>
 
-                    <form onSubmit={onCreateKolPreview} className="p-3">
-                        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
-                            {/* Form panel */}
-                            <div className="min-w-0 rounded-3xl border border-slate-200 bg-white p-3 sm:p-4">
-                                <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-8">
-                                    <div className="space-y-3 w-full max-w-[320px]">
-                                        {LEFT_FIELDS.map((fieldKey) => (
-                                            <RenderField
-                                                key={fieldKey}
-                                                field={getFieldByKey(fieldKey)}
-                                                form={form}
-                                                onUpdateField={onUpdateField}
-                                                __={__}
-                                            />
-                                        ))}
-                                    </div>
-
-                                    <div className="space-y-3 w-full flex flex-col justify-between">
-                                        <div className="space-y-3">
-                                            {RIGHT_FIELDS.map((fieldKey) => (
-                                                <RenderField
-                                                    key={fieldKey}
-                                                    field={getFieldByKey(fieldKey)}
-                                                    form={form}
-                                                    onUpdateField={onUpdateField}
-                                                    __={__}
-                                                />
-                                            ))}
-                                        </div>
-
-                                        <div className="flex flex-wrap items-center gap-3">
-                                            <button
-                                                type="submit"
-                                                disabled={isCreatingPreview || form.image_locked}
-                                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
-                                            >
-                                                <Wand2 size={16} />
-                                                {isCreatingPreview ? __('Creating...') : __('Create KOL')}
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                onClick={onAddKolToList}
-                                                disabled={!form.image_url || isCreatingPreview}
-                                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2 font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-                                            >
-                                                <Plus size={16} />
-                                                {__('Add KOL to list')}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                    <form onSubmit={onCreateKolPreview} className="p-3 sm:p-4">
+                        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
                             {/* Preview panel */}
                             <div className="min-w-0 rounded-3xl border border-slate-200 bg-slate-50 p-2">
                                 <div className="flex h-full min-h-[540px] flex-col rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
@@ -295,6 +235,55 @@ export default function AddDialog({
                                                 ? __('Image uploaded. Only Name KOL can be edited.')
                                                 : __('Choose a KOL image from your computer to auto-fill the profile attributes.')}
                                     </p>
+                                </div>
+                            </div>
+
+                            {/* Form panel */}
+                            <div className="min-w-0 overflow-x-hidden rounded-3xl border border-slate-200 bg-white p-3 sm:p-5">
+                                <div className="space-y-4">
+                                    {FIELD_ROWS.map((row, index) => (
+                                        <div
+                                            key={index}
+                                            className="grid grid-cols-1 gap-4 md:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]"
+                                        >
+                                            {row.map((fieldKey) => (
+                                                <div
+                                                    key={fieldKey}
+                                                    className={fieldKey === 'body_type' ? 'md:col-span-2' : ''}
+                                                >
+                                                    <RenderField
+                                                        field={getFieldByKey(fieldKey)}
+                                                        form={form}
+                                                        onUpdateField={onUpdateField}
+                                                        __={__}
+                                                    />
+                                                </div>
+                                            ))}
+
+                                            {row.length === 1 && <div className="hidden md:block" />}
+                                        </div>
+                                    ))}
+
+                                    <div className="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-4">
+                                        <button
+                                            type="submit"
+                                            disabled={isCreatingPreview || form.image_locked}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                                        >
+                                            <Wand2 size={16} />
+                                            {isCreatingPreview ? __('Creating...') : __('Create KOL')}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={onAddKolToList}
+                                            disabled={!form.image_url || isCreatingPreview}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2 font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                        >
+                                            <Plus size={16} />
+                                            {__('Add KOL to list')}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

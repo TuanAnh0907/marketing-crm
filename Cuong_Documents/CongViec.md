@@ -22,7 +22,6 @@
 2. Settings cho KOL
 - Tao trang `settings/kol` gom:
 	- Ho so KOL (cac cot bat buoc): `name`, `gender`, `apparent_age`, `ethnicity`, `face_shape`, `default_expression`, `eye_type`, `hair_style`, `hair_color`, `skin_tone`, `body_type`.
-	- Them cot `tiktok_url` (duong link den kenh TikTok cua KOL). Tren UI dang bang danh sach, cot nay phai la link co the bam duoc; bam vao thi mo trang TikTok cua KOL (tab moi).
 	- Du lieu mau can luu duoc:
 	  - `name`: `Kol 1`
 	  - `gender`: `female`
@@ -40,7 +39,7 @@
 - Luu du lieu vao bang `kol_profiles` va `kol_preferences`.
 - Definition of Done:
 	- KOL cap nhat profile duoc, du lieu luu va tai lai dung.
-	- Cot `tiktok_url` hien thi dang link bam duoc va mo dung trang kenh TikTok.
+	
 
 3. Kho luu API key theo tenant/customer
 - Tao module `customer_integrations` hoac `integration_credentials`.
